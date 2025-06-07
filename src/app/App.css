@@ -36,3 +36,26 @@
     transform: rotate(360deg);
   }
 }
+
+.navbar.container-fluid {
+  height: 60px !important;
+  min-height: 60px !important;
+  padding-left: 0px !important;
+}
+
+.navbar-brand img {
+  max-height: 58px;
+  width: auto;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+.modal-dialog.custom-login-modal {
+  max-width: 320px !important;
+  width: 90% !important;
+}
+
+.login-modal-top.modal-dialog {
+  margin-top: 100px !important;
+  /* Adjust as needed */
+}
