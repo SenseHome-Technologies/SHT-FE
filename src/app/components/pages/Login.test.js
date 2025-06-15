@@ -1,16 +1,31 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import '@testing-library/jest-dom';
 import { MemoryRouter } from 'react-router-dom';
-import { AuthData } from '../../auth/AuthWrapper';
-import LoginForm from './Login';
 
-// Mock AuthData context
+const mockNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => {
+  const actual = jest.requireActual('react-router-dom');
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
+
+import { AuthData } from '../../auth/AuthWrapper';
+import { LoginForm } from './Login';
+
 jest.mock('../../auth/AuthWrapper', () => ({
     AuthData: () => ({
         login: jest.fn(),
         user: {}
     })
 }));
+
+afterEach(() => {
+    jest.clearAllMocks();
+});
 
 describe('LoginForm', () => {
     it('renders email and password fields', () => {
@@ -43,15 +58,8 @@ describe('LoginForm', () => {
     });
 
     it('navigates on successful login', async () => {
-        const mockNavigate = jest.fn();
         const mockLogin = jest.fn().mockResolvedValue({ status: 200, token: 'abc', user: { username: 'Test', email: 'test@example.com' } });
         jest.spyOn(require('../../auth/AuthWrapper'), 'AuthData').mockReturnValue({ login: mockLogin, user: {} });
-
-        // Mock useNavigate
-        jest.mock('react-router-dom', () => ({
-            ...jest.requireActual('react-router-dom'),
-            useNavigate: () => mockNavigate,
-        }));
 
         render(
             <MemoryRouter>
