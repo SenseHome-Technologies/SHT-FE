@@ -11,6 +11,7 @@ const LoginForm = () => {
 
     const [formData, setFormData] = useState({ email: "", password: "" });
     const [validated, setValidated] = useState(false);
+    const [error, setError] = useState(""); // For showing login errors
 
     const handleChange = (event) => {
         setFormData({ ...formData, [event.target.name]: event.target.value });
@@ -19,10 +20,13 @@ const LoginForm = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         setValidated(true);
+        setError("");
         if (formData.email && formData.password) {
-            await login(formData.email, formData.password);
-            if (user.isAuthenticated) {
+            const result = await login(formData.email, formData.password);
+            if (result && result.status === 200 && result.token) {
                 navigate("/backoffice");
+            } else {
+                setError(result?.message || "Login failed");
             }
         }
     };
